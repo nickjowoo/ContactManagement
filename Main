@@ -1,0 +1,140 @@
+import java.util.Scanner;
+import java.util.ArrayList;
+
+// Define the Contact class to hold contact details
+class Contact {
+    private String name;
+    private String phoneNumber;
+    private String email;
+
+    public Contact(String name, String phoneNumber, String email) {
+        this.name = name;
+        this.phoneNumber = phoneNumber;
+        this.email = email;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+}
+
+// Define the ContactList class to manage the list of contacts
+class ContactList {
+    public static ArrayList<Contact> contacts = new ArrayList<Contact>();
+
+    public static void addContact(Contact contact) {
+        if (contacts.size() < 20) {
+            contacts.add(contact);
+            System.out.println("\nContact added!\n");
+        } else {
+            System.out.println("\nContact list is full. Cannot add more contacts.\n");
+        }
+    }
+
+    public static void deleteContact(int index) {
+        if (index >= 0 && index < contacts.size()) {
+            contacts.remove(index);
+            System.out.println("\nContact deleted!\n");
+        } else {
+            System.out.println("\nInvalid contact index.\n");
+        }
+    }
+
+    public static void viewContacts() {
+        if (contacts.isEmpty()) {
+            System.out.println("\nThere are no contacts to display. Add one!\n");
+        } else {
+            for (int i = 0; i < 20; i++) {
+                System.out.print((i + 1) + ". ");
+                if (i < contacts.size()) {
+                    Contact contact = contacts.get(i);
+                    System.out.println(contact.getName() + " | Phone Number: " + contact.getPhoneNumber() + " | Email: " + contact.getEmail());
+                } else {
+                    System.out.println();
+                }
+            }
+        }
+    }
+
+    public static void clearContacts() {
+        contacts.clear();
+        System.out.println("\nAll contacts have been cleared!\n");
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        System.out.println("Welcome to your contacts, an application designed to manage, store, and search your contacts that YOU are able to add! (Up to 20!)\n-*-");
+        System.out.print("\nFirst, enter your name to get started: ");
+        final String holder = sc.nextLine();
+        while (true) {
+            System.out.println("Hello, " + holder + ", what would you like to do?");
+            System.out.println("I am capable of many tasks, please enter the number of the task you would like to perform.");
+            System.out.println("1. Add a contact");
+            System.out.println("2. Delete a contact");
+            System.out.println("3. View all contacts");
+            System.out.println("4. Clear my contacts");
+            System.out.println("5. Exit");
+            System.out.print("\nChoose an option: ");
+            int task = sc.nextInt();
+            sc.nextLine(); // Consume newline left-over
+
+            if (task == 1) {
+                System.out.print("\nSounds good, please enter the following information:\nName: ");
+                String name = sc.nextLine();
+                while (name.matches(".*\\d.*")) {
+                    System.out.print("Please enter a valid name: ");
+                    name = sc.nextLine();
+                }
+
+                System.out.print("Phone Number: ");
+                String phoneNumber = sc.nextLine();
+                while (phoneNumber.length() < 10 || !phoneNumber.matches("\\d+")) {
+                    System.out.print("The correct format for phone numbers is below.\n XXX-XXX-XXXX OR XXXXXXXXXX\nPlease enter a valid phone number: ");
+                    phoneNumber = sc.nextLine();
+                }
+
+                System.out.print("Email: ");
+                String email = sc.nextLine();
+                while (!email.contains("@") || !email.contains(".") || email.contains(" ")) {
+                    System.out.print("Please follow the format for emails: x@gmail.com\nPlease enter a valid email address: ");
+                    email = sc.nextLine();
+                }
+
+                Contact contact = new Contact(name, phoneNumber, email);
+                ContactList.addContact(contact);
+
+            } else if (task == 2) {
+                System.out.println("Select the contact to delete:");
+                ContactList.viewContacts();
+                System.out.print("Enter the number of the contact to delete: ");
+                int index = sc.nextInt() - 1;
+                sc.nextLine(); // Consume newline left-over
+                ContactList.deleteContact(index);
+
+            } else if (task == 3) {
+                ContactList.viewContacts();
+
+            } else if (task == 4) {
+                ContactList.clearContacts();
+
+            } else if (task == 5) {
+                System.out.println("\nThank you for using my application!");
+                break;
+
+            } else {
+                System.out.println("Invalid option. Please try again.");
+            }
+        }
+        sc.close();
+    }
+}
